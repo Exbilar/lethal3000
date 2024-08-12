@@ -55,39 +55,46 @@ for addr in addr_list:
     # copy contract ABI to clipboard
 
     copy_btn = driver.find_element(by=By.XPATH, value='//a[@aria-label="Copy ABI to clipboard"]')
-    driver.execute_script("arguments[0].click()", copy_btn)
-    sleep(1)
+    driver.execute_script("arguments[0].scrollIntoView();", copy_btn)
+    sleep(2)
+    driver.execute_script("window.scrollBy(0, -150);")
+    sleep(2)
 
+    copy_btn.click()
     abi = pyperclip.paste()
     print(abi)
 
-    with open("./" + str(addr) + "/abi.json", "w") as f:
+    with open("./" + str(addr) + "/abi.json", "w", encoding='utf-8') as f:
         f.write(abi)
 
-    # headers = driver.find_elements(by=By.XPATH, value='//div[@id="dividcode"]/div//h4')
-    # num = 1
-    # for header in headers:
-    #     if "Deployed Bytecode" in str(header.get_attribute("innerHTML")):
-    #         break
-    #     num += 1
+    headers = driver.find_elements(by=By.XPATH, value='//div[@id="dividcode"]/div//h4')
+    num = 1
+    for header in headers:
+        if "Deployed Bytecode" in str(header.get_attribute("innerHTML")):
+            break
+        num += 1
 
-    # bytecode_box = driver.find_element(by=By.XPATH, value='//div[@id="dividcode"]/div[{}]/pre'.format(num))
-    # bytecode = bytecode_box.get_attribute("innerHTML")
-    # print(bytecode)
+    bytecode_box = driver.find_element(by=By.XPATH, value='//div[@id="dividcode"]/div[{}]/pre'.format(num))
+    bytecode = bytecode_box.get_attribute("innerHTML")
+    print(bytecode)
 
-    # with open("./" + str(addr) + "/bytecode.bin", "w") as f:
-    #     f.write(bytecode)
+    with open("./" + str(addr) + "/bytecode.bin", "w", encoding='utf-8') as f:
+        f.write(bytecode)
 
-    # source_codes = driver.find_elements(by=By.XPATH, value='//a[@aria-label="Copy source code to clipboard"]')
-    # num = 0
-    # for code in source_codes:
-    #     driver.execute_script("arguments[0].click()", code)
-    #     sleep(2)
-    #     res = pyperclip.paste()
-    #     print(res)
-    #     with open("./" + str(addr) + f"/code{num}.sol", "w") as f:
-    #         f.write(res)
-    #     num += 1
-    # sleep(10)
+    source_codes = driver.find_elements(by=By.XPATH, value='//a[@aria-label="Copy source code to clipboard"]')
+    num = 0
+    for code in source_codes:
+        driver.execute_script("arguments[0].scrollIntoView();", code)
+        sleep(2)
+        driver.execute_script("window.scrollBy(0, -150);")
+        sleep(2)
+
+        code.click()
+        res = pyperclip.paste()
+        print(res)
+        with open("./" + str(addr) + f"/code{num}.sol", "w", encoding='utf-8') as f:
+            f.write(res)
+        num += 1
+    sleep(10)
 
 driver.quit()
